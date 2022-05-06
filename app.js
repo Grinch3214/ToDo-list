@@ -48,6 +48,7 @@ const tasks = [
 	//? Events
 	renderOfTasks(objOfTasks);
 	form.addEventListener('submit', onFormSubmitHandler);
+	listContainer.addEventListener('click', onDeleteHandler);
 
 	function renderOfTasks(taskList) {
 		if (!taskList) {
@@ -61,7 +62,7 @@ const tasks = [
 			fragment.appendChild(li);
 		});
 		listContainer.appendChild(fragment);
-	}
+	};
 
 	function listItemTemplate({_id, title, body} = {}) {
 		const li = document.createElement('li');
@@ -72,6 +73,7 @@ const tasks = [
 			'flex-wrap',
 			'mt-2'
 		);
+		li.setAttribute('data-task-id', _id);
 
 		const span = document.createElement('span');
 		span.textContent = title;
@@ -89,7 +91,7 @@ const tasks = [
 		elements.forEach(item => li.appendChild(item));
 
 		return li
-	}
+	};
 
 	function onFormSubmitHandler(event) {
 		event.preventDefault();
@@ -105,7 +107,7 @@ const tasks = [
 		const listItem = listItemTemplate(task);
 		listContainer.insertAdjacentElement('afterbegin', listItem);
 		form.reset();
-	}
+	};
 
 	function createNewTask(title, body) {
 		const newTask = {
@@ -116,6 +118,28 @@ const tasks = [
 		};
 		objOfTasks[newTask._id] = newTask;
 		return { ...newTask };
-	}
+	};
+
+	function deleteTask(id) {
+		const { title } = objOfTasks[id];
+		const isConfirm = confirm(`Do you really want to delete ${title}`);
+		if (!isConfirm) return isConfirm;
+		delete objOfTasks[id];
+		return isConfirm;
+	};
+
+	function deleteTaskFromHtml(confirmed, el) {
+		if(!confirmed) return;
+		el.remove();
+	};
+
+	function onDeleteHandler({ target }) {
+		if (target.classList.contains('delete-btn')) {
+			const parent = target.closest('[data-task-id]');
+			const id = parent.dataset.taskId;
+			const confirmed = deleteTask(id);
+			deleteTaskFromHtml(confirmed, parent);
+		}
+	};
 
 })(tasks);
