@@ -114,6 +114,7 @@ const tasks = [
 	const inputBody = form.elements['body'];
 	const themeSelect = document.getElementById('themeSelect');
 	setTheme(lastSelectedTheme);
+	themeSelect.value = lastSelectedTheme;
 	
 	//? Events
 	renderOfTasks(objOfTasks);
